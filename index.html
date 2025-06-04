@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arabacademie Analytics Dashboard</title>
+    <title>🕌 Arabacademie Analytics Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -46,6 +46,12 @@
             background: white;
             border-radius: 8px;
             border: 1px solid #e5e7eb;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         .error {
@@ -63,6 +69,7 @@
             padding: 2rem;
             color: white;
             margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .summary-grid {
@@ -76,6 +83,18 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             padding: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .summary-item h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-item p {
+            font-size: 0.875rem;
+            opacity: 0.9;
         }
         
         .kpi-grid {
@@ -91,6 +110,12 @@
             padding: 1.5rem;
             border: 1px solid #e5e7eb;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
         .kpi-header {
@@ -119,121 +144,422 @@
             margin-bottom: 2rem;
         }
         
+        .campaign-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: #f9fafb;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .campaign-item:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        
+        .campaign-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .campaign-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .campaign-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #111827;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid;
+        }
+        
+        .status-excellent {
+            color: #065f46;
+            background: #d1fae5;
+            border-color: #6ee7b7;
+        }
+        
+        .status-good {
+            color: #1e40af;
+            background: #dbeafe;
+            border-color: #93c5fd;
+        }
+        
+        .status-warning {
+            color: #92400e;
+            background: #fef3c7;
+            border-color: #fcd34d;
+        }
+        
+        .status-danger {
+            color: #991b1b;
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+        
+        .campaign-profit {
+            text-align: right;
+        }
+        
+        .profit-value {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #059669;
+        }
+        
+        .profit-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        
+        .metric-card:hover {
+            background: #f9fafb;
+        }
+        
+        .metric-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+        
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        .metric-subtext {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .recommendation-box {
+            background: #d1fae5;
+            border: 1px solid #6ee7b7;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .recommendation-title {
+            font-weight: bold;
+            color: #065f46;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .recommendation-text {
+            color: #065f46;
+            font-weight: 500;
+        }
+        
+        .actions-section {
+            background: linear-gradient(135deg, #059669, #10b981);
+            border-radius: 8px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .action-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .action-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.125rem;
+        }
+        
+        .action-steps {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .action-impact {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+        
         .footer {
             text-align: center;
             color: #6b7280;
             font-size: 0.875rem;
+            padding: 2rem 0;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 2rem;
+        }
+        
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: #059669;
+        }
+        
+        .refresh-button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            margin-left: 1rem;
+            transition: background 0.2s ease;
+        }
+        
+        .refresh-button:hover {
+            background: #1d4ed8;
+        }
+        
+        .last-update {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .campaign-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .campaign-profit {
+                text-align: left;
+            }
+            
+            .campaign-title {
+                justify-content: flex-start;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Arabacademie Analytics Dashboard</h1>
+            <h1>🕌 Arabacademie Analytics Dashboard</h1>
             <p>Tes campagnes Meta en temps réel - Pixel ID: 523125922634589</p>
-            <p>Dernière mise à jour: <span id="lastUpdate"></span></p>
+            <div class="last-update">
+                <span>Dernière mise à jour: <span id="lastUpdate"></span></span>
+                <button class="refresh-button" onclick="reloadData()">🔄 Actualiser</button>
+            </div>
         </div>
 
         <div id="loadingState" class="loading">
-            <h2>Chargement de tes données Meta en cours...</h2>
-            <p>Connexion à l'API Facebook Marketing...</p>
+            <h2>🔄 Chargement de tes données Meta en cours...</h2>
+            <p>Connexion via Cloudflare Worker sécurisé...</p>
+            <p style="font-size: 0.875rem; margin-top: 1rem; opacity: 0.7;">
+                Récupération des campagnes, calcul des métriques et génération des recommandations IA...
+            </p>
         </div>
 
         <div id="errorState" class="error" style="display: none;">
-            <h3>Erreur de connexion</h3>
+            <h3>❌ Erreur de connexion</h3>
             <p id="errorMessage"></p>
+            <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+                <strong>Solutions :</strong>
+                <br>• Vérifie que ton Worker Cloudflare est déployé
+                <br>• Contrôle tes variables d'environnement (META_PIXEL_ID, META_ACCESS_TOKEN)
+                <br>• Consulte les logs du Worker pour plus de détails
+            </p>
+            <button class="refresh-button" onclick="reloadData()" style="margin-top: 1rem;">
+                🔄 Réessayer
+            </button>
         </div>
 
         <div id="dashboardContent" style="display: none;">
             <div class="summary-card">
-                <h2>Résumé Exécutif</h2>
+                <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">
+                    💰 RÉSUMÉ EXÉCUTIF (30 secondes)
+                </h2>
                 <div class="summary-grid" id="summaryGrid"></div>
             </div>
 
             <div class="kpi-grid" id="kpiGrid"></div>
 
             <div class="campaign-section">
-                <h3>Analyse Détaillée - Vue Business Owner</h3>
+                <h3 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem;">
+                    🚀 Analyse Détaillée - Vue Business Owner
+                </h3>
                 <div id="campaignsContainer"></div>
+            </div>
+
+            <div class="actions-section">
+                <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">
+                    ⚡ ACTIONS PRIORITAIRES (Next 24-48h)
+                </h3>
+                <div class="actions-grid" id="actionsContainer"></div>
             </div>
         </div>
 
         <div class="footer">
-            <p>Dashboard mis à jour automatiquement depuis Meta API</p>
-            <p>Version SaaS - Temps réel connecté</p>
+            <p>🔄 Dashboard mis à jour automatiquement via Cloudflare Workers</p>
+            <p>📊 Données unifiées Meta Pixel + Conversions API - Attribution parfaite</p>
+            <p class="highlight">🚀 Version SaaS - Temps réel connecté via Worker sécurisé !</p>
         </div>
     </div>
 
     <script>
-        // Configuration API Meta
-        const API_CONFIG = {
-            accessToken: 'YOUR_TOKEN_HERE',
-            adAccountId: '521225926263753',
-            baseUrl: 'https://graph.facebook.com/v18.0'
-        };
-
-        // Variables globales
-        let globalMetrics = {
-            totalSpend: 0,
-            totalRevenue: 0,
-            roas: 0,
-            conversions: 0,
-            profit: 0
-        };
-
+        // Configuration - TON WORKER CLOUDFLARE
+        const WORKER_URL = 'https://meta-capi-worker.anthonypicciau.workers.dev';
+        
+        let globalMetrics = {};
         let campaignsData = [];
 
         function formatEuros(num) {
-            return Math.round(num) + '€';
+            if (isNaN(num) || num === null || num === undefined) return '0€';
+            return Math.round(num).toLocaleString('fr-FR') + '€';
         }
 
-        function validateToken() {
-            if (API_CONFIG.accessToken === 'EAAMdghREVZBgBO7xqiT0l7zcqC8YZAFNXhz43gnJatBZAuMSdmqJZCuxvH2EnAjUI1KZBhOdZCqbaZCM1JJ2CX5LnlgQEFta8KXLZAhGsKLW1YXc2eyVgxpNHUukZBjsyzr2cqCEvjk1zpZAZCJZA78xINWOy77YQNUXgoiGblFN7H9Q5vSkX1DIVtx5P1mK1sAGxgZDZD') {
-                throw new Error('Tu dois remplacer YOUR_TOKEN_HERE par ton vrai token Meta API !');
+        function formatNumber(num) {
+            if (isNaN(num) || num === null || num === undefined) return '0';
+            return Math.round(num).toLocaleString('fr-FR');
+        }
+
+        function getCampaignStatus(roas) {
+            if (roas >= 4.0) return { status: 'excellent', label: '🟢 EXCELLENT' };
+            if (roas >= 2.5) return { status: 'good', label: '🔵 BON' };
+            if (roas >= 1.5) return { status: 'warning', label: '🟡 ATTENTION' };
+            return { status: 'danger', label: '🔴 PROBLÈME' };
+        }
+
+        function getRecommendation(campaign) {
+            const roas = campaign.roas || 0;
+            const spend = campaign.spend || 0;
+            
+            if (roas >= 4.0) {
+                return `🚀 EXCELLENT! Augmente le budget de +50% (${formatEuros(spend * 0.5)} supplémentaires)`;
+            } else if (roas >= 2.5) {
+                return `📈 BON RÉSULTAT. Teste de nouvelles audiences ou créatives pour optimiser`;
+            } else if (roas >= 1.5) {
+                return `⚠️ ATTENTION. Optimise la campagne ou réduis le budget de -30%`;
+            } else {
+                return `🛑 PAUSE recommandée. ROAS trop faible, revois ta stratégie`;
             }
         }
 
-        async function fetchCampaignsData() {
-            const url = API_CONFIG.baseUrl + '/act_' + API_CONFIG.adAccountId + '/campaigns?fields=name,status,spend&access_token=' + API_CONFIG.accessToken;
+        function getBusinessExplanation(campaign) {
+            const roas = campaign.roas || 0;
+            const spend = campaign.spend || 0;
+            const profit = campaign.profit || 0;
+            const dailyBudget = Math.round(spend / 30);
+            const dailyProfit = Math.round(profit / 30);
             
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('Erreur API: ' + response.status + ' - ' + response.statusText);
+            if (roas >= 4.0) {
+                return `💡 Analyse: Cette campagne génère ${roas.toFixed(1)}€ pour chaque 1€ investi. Avec un budget de ${formatEuros(dailyBudget)}/jour, tu gagnes ${formatEuros(dailyProfit)}/jour net. C'est une MACHINE À CASH !`;
+            } else if (roas >= 2.5) {
+                return `💡 Analyse: Rentable avec bonne marge. Budget actuel ${formatEuros(dailyBudget)}/jour génère ${formatEuros(dailyProfit)}/jour de profit. Potentiel d'amélioration !`;
+            } else {
+                return `💡 Analyse: Marge faible. Cette campagne génère peu de profit par rapport aux investissements. Temps d'optimiser !`;
             }
-            
-            const data = await response.json();
-            return data.data || [];
         }
 
         async function loadDashboardData() {
             try {
+                console.log('🔄 Chargement des données depuis:', WORKER_URL + '/api/dashboard');
+                
                 document.getElementById('loadingState').style.display = 'block';
                 document.getElementById('errorState').style.display = 'none';
                 document.getElementById('dashboardContent').style.display = 'none';
 
-                validateToken();
+                // Appel à ton Worker Cloudflare
+                const response = await fetch(WORKER_URL + '/api/dashboard', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
                 
-                const campaigns = await fetchCampaignsData();
-                console.log('Campagnes récupérées:', campaigns);
-
-                if (campaigns.length === 0) {
-                    throw new Error('Aucune campagne trouvée dans ce compte publicitaire');
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Erreur Worker: ${response.status} - ${response.statusText}\n${errorText}`);
                 }
-
-                // Traitement des données simplifiées
-                campaignsData = campaigns.map(campaign => ({
-                    name: campaign.name,
-                    spend: parseFloat(campaign.spend || 0),
-                    status: campaign.status
-                }));
-
+                
+                const data = await response.json();
+                console.log('✅ Données reçues du Worker:', data);
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Erreur inconnue du Worker');
+                }
+                
+                globalMetrics = data.metrics || {};
+                campaignsData = data.campaigns || [];
+                
+                console.log('📊 Métriques globales:', globalMetrics);
+                console.log('📋 Campagnes:', campaignsData);
+                
+                if (campaignsData.length === 0) {
+                    throw new Error('Aucune campagne active trouvée dans ton compte Meta');
+                }
+                
                 renderDashboard();
                 
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('dashboardContent').style.display = 'block';
 
+                // Animation d'entrée
+                setTimeout(animateCards, 100);
+
             } catch (error) {
-                console.error('Erreur:', error);
+                console.error('❌ Erreur lors du chargement:', error);
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('errorState').style.display = 'block';
                 document.getElementById('errorMessage').textContent = error.message;
@@ -241,44 +567,295 @@
         }
 
         function renderDashboard() {
-            // Calcul des métriques de base
-            const totalSpend = campaignsData.reduce((sum, c) => sum + c.spend, 0);
+            renderSummary();
+            renderKPIs();
+            renderCampaigns();
+            renderActions();
+        }
+
+        function renderSummary() {
+            const bestCampaign = campaignsData.reduce((best, campaign) => 
+                (campaign.profit || 0) > (best.profit || 0) ? campaign : best, 
+                campaignsData[0] || {});
             
-            // Rendu simplifié
-            document.getElementById('summaryGrid').innerHTML = 
-                '<div class="summary-item"><h3>Budget Total: ' + formatEuros(totalSpend) + '</h3><p>Campagnes actives: ' + campaignsData.length + '</p></div>';
+            const profitPercentage = globalMetrics.totalSpend > 0 ? 
+                ((globalMetrics.profit / globalMetrics.totalSpend) * 100).toFixed(0) : 0;
+            
+            const campaignProfit = bestCampaign.profit || 0;
+            const campaignPercentage = globalMetrics.profit > 0 ? 
+                ((campaignProfit / globalMetrics.profit) * 100).toFixed(0) : 0;
+            
+            const excellentCampaigns = campaignsData.filter(c => (c.roas || 0) >= 4).length;
+            
+            const summaryHtml = `
+                <div class="summary-item">
+                    <h3>Tu GAGNES ${formatEuros(globalMetrics.profit)} ce mois</h3>
+                    <p>Pour ${formatEuros(globalMetrics.totalSpend)} investis en publicité</p>
+                    <p style="font-size: 0.75rem; opacity: 0.75;">ROI global: ${profitPercentage}%</p>
+                </div>
+                <div class="summary-item">
+                    <h3>"${bestCampaign.name || 'Meilleure campagne'}" = Ta poule aux œufs d'or</h3>
+                    <p>${campaignPercentage}% de tes profits viennent de cette campagne</p>
+                    <p style="font-size: 0.75rem; opacity: 0.75;">ROAS: ${(bestCampaign.roas || 0).toFixed(1)}x</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Actions à prendre MAINTENANT</h3>
+                    <p>${excellentCampaigns} campagne(s) à scaler immédiatement</p>
+                    <p style="font-size: 0.75rem; opacity: 0.75;">Impact prévu: +${formatEuros(globalMetrics.profit * 0.15)}</p>
+                </div>
+            `;
+            document.getElementById('summaryGrid').innerHTML = summaryHtml;
+        }
 
-            document.getElementById('kpiGrid').innerHTML = 
-                '<div class="kpi-card"><div class="kpi-header"><div><div class="kpi-label">Budget Utilisé</div><div class="kpi-value">' + formatEuros(totalSpend) + '</div></div></div></div>';
+        function renderKPIs() {
+            const kpis = [
+                { label: 'Profit Net Total', value: formatEuros(globalMetrics.profit), color: '#059669', icon: '💰' },
+                { label: 'ROAS Moyen', value: `${(globalMetrics.roas || 0).toFixed(1)}x`, color: '#2563eb', icon: '📈' },
+                { label: 'Conversions', value: formatNumber(globalMetrics.totalConversions), color: '#7c3aed', icon: '🎯' },
+                { label: 'Budget Utilisé', value: formatEuros(globalMetrics.totalSpend), color: '#ea580c', icon: '💳' },
+                { label: 'Chiffre d\'Affaires', value: formatEuros(globalMetrics.totalRevenue), color: '#4f46e5', icon: '💹' }
+            ];
 
-            const campaignsHtml = campaignsData.map(campaign => 
-                '<div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;"><h4>' + campaign.name + '</h4><p>Budget: ' + formatEuros(campaign.spend) + '</p><p>Statut: ' + campaign.status + '</p></div>'
-            ).join('');
+            const kpiHtml = kpis.map(kpi => `
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div>
+                            <div class="kpi-label">${kpi.label}</div>
+                            <div class="kpi-value" style="color: ${kpi.color};">${kpi.value}</div>
+                        </div>
+                        <div style="font-size: 2rem;">${kpi.icon}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('kpiGrid').innerHTML = kpiHtml;
+        }
+
+        function renderCampaigns() {
+            if (campaignsData.length === 0) {
+                document.getElementById('campaignsContainer').innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #6b7280;">
+                        <p>Aucune campagne active trouvée.</p>
+                        <p style="font-size: 0.875rem; margin-top: 0.5rem;">
+                            Assure-toi d'avoir des campagnes actives dans ton compte Meta Ads.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            const campaignsHtml = campaignsData.map(campaign => {
+                const statusInfo = getCampaignStatus(campaign.roas || 0);
+                const dailyBudget = Math.round((campaign.spend || 0) / 30);
+                const dailyRevenue = Math.round((campaign.revenue || 0) / 30);
+                const dailyConversions = Math.round((campaign.conversions || 0) / 30 * 10) / 10;
+
+                return `
+                    <div class="campaign-item">
+                        <div class="campaign-header">
+                            <div class="campaign-title">
+                                <h4 class="campaign-name">${campaign.name}</h4>
+                                <span class="status-badge status-${statusInfo.status}">${statusInfo.label}</span>
+                            </div>
+                            <div class="campaign-profit">
+                                <div class="profit-value">+${formatEuros(campaign.profit || 0)}</div>
+                                <div class="profit-label">profit net</div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">Budget Investi</div>
+                                <div class="metric-value" style="color: #dc2626;">
+                                    ${formatEuros(campaign.spend || 0)}
+                                </div>
+                                <div class="metric-subtext">~${formatEuros(dailyBudget)}/jour</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Revenus Générés</div>
+                                <div class="metric-value" style="color: #2563eb;">
+                                    ${formatEuros(campaign.revenue || 0)}
+                                </div>
+                                <div class="metric-subtext">~${formatEuros(dailyRevenue)}/jour</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">ROAS</div>
+                                <div class="metric-value" style="color: #7c3aed;">
+                                    ${(campaign.roas || 0).toFixed(1)}x
+                                </div>
+                                <div class="metric-subtext">Retour sur investissement</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Conversions</div>
+                                <div class="metric-value" style="color: #059669;">
+                                    ${campaign.conversions || 0}
+                                </div>
+                                <div class="metric-subtext">${dailyConversions} /jour</div>
+                            </div>
+                        </div>
+
+                        <div style="background: #dbeafe; border: 1px solid #93c5fd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                            <div style="font-weight: bold; color: #1e40af; margin-bottom: 0.5rem;">
+                                🧠 Explication Business :
+                            </div>
+                            <div style="color: #1e40af; font-size: 0.875rem;">
+                                ${getBusinessExplanation(campaign)}
+                            </div>
+                        </div>
+
+                        <div class="recommendation-box">
+                            <div class="recommendation-title">
+                                💡 Recommandation IA :
+                            </div>
+                            <div class="recommendation-text">
+                                ${getRecommendation(campaign)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
             document.getElementById('campaignsContainer').innerHTML = campaignsHtml;
+        }
+
+        function renderActions() {
+            const topCampaign = campaignsData.reduce((best, campaign) => 
+                (campaign.roas || 0) > (best.roas || 0) ? campaign : best, 
+                campaignsData[0] || {});
+            
+            const improveCampaign = campaignsData.find(campaign => 
+                (campaign.roas || 0) >= 2 && (campaign.roas || 0) < 4) || campaignsData[1];
+
+            let actionsHtml = '';
+
+            if (topCampaign && topCampaign.name) {
+                actionsHtml += `
+                    <div class="action-item">
+                        <div class="action-title">
+                            🚀 "${topCampaign.name}" - SCALE IMMÉDIAT
+                        </div>
+                        <div class="action-steps">
+                            ✅ Augmente budget de 50% (${formatEuros((topCampaign.spend || 0) * 0.5)} supplémentaires)
+                        </div>
+                        <div class="action-steps">
+                            ✅ Duplique sur autres audiences similaires
+                        </div>
+                        <div class="action-impact">
+                            Impact prévu: +${formatEuros((improveCampaign.profit || 0) * 0.2)} profit supplémentaire
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (!actionsHtml) {
+                actionsHtml = `
+                    <div class="action-item">
+                        <div class="action-title">
+                            📊 ANALYSE EN COURS
+                        </div>
+                        <div class="action-steps">
+                            ✅ Collecte de plus de données pour générer des recommandations précises
+                        </div>
+                        <div class="action-steps">
+                            ✅ Optimise tes campagnes existantes en attendant
+                        </div>
+                        <div class="action-impact">
+                            Les recommandations apparaîtront avec plus de données
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('actionsContainer').innerHTML = actionsHtml;
+        }
+
+        function animateCards() {
+            const cards = document.querySelectorAll('.kpi-card, .campaign-item');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
         }
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('lastUpdate').textContent = new Date().toLocaleString('fr-FR');
-            
-            try {
-                loadDashboardData();
-            } catch (error) {
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('errorState').style.display = 'block';
-                document.getElementById('errorMessage').textContent = error.message;
+            loadDashboardData();
+        });
+
+        // Actualisation automatique toutes les 5 minutes
+        setInterval(() => {
+            console.log('🔄 Actualisation automatique des données...');
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString('fr-FR');
+            loadDashboardData();
+        }, 300000); // 5 minutes
+
+        // Fonctions globales pour debug et contrôle
+        window.debugInfo = function() {
+            console.log('🔍 Debug Info:');
+            console.log('Worker URL:', WORKER_URL);
+            console.log('Métriques globales:', globalMetrics);
+            console.log('Campagnes:', campaignsData);
+            console.log('Dernière mise à jour:', document.getElementById('lastUpdate').textContent);
+        };
+
+        window.reloadData = function() {
+            console.log('🔄 Rechargement manuel des données...');
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString('fr-FR');
+            loadDashboardData();
+        };
+
+        // Gestion des erreurs globales
+        window.addEventListener('error', function(e) {
+            console.error('❌ Erreur JavaScript:', e.error);
+        });
+
+        // Détection de la perte de connexion
+        window.addEventListener('online', function() {
+            console.log('🔄 Connexion rétablie, rechargement des données...');
+            reloadData();
+        });
+
+        window.addEventListener('offline', function() {
+            console.log('📡 Connexion perdue');
+        });
+
+        // Raccourci clavier pour recharger (Ctrl+R ou Cmd+R)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                reloadData();
             }
         });
 
-        // Debug functions
-        window.debugInfo = function() {
-            console.log('Ad Account ID:', API_CONFIG.adAccountId);
-            console.log('Token présent:', API_CONFIG.accessToken !== 'YOUR_TOKEN_HERE');
-            console.log('Campagnes:', campaignsData);
-        };
-
-        window.reloadData = loadDashboardData;
+        // Log de démarrage
+        console.log('🚀 Arabacademie Dashboard initialized');
+        console.log('📡 Worker URL:', WORKER_URL);
+        console.log('🎯 Pixel ID: 523125922634589');
     </script>
 </body>
 </html>
+                            Impact prévu: +${formatEuros((topCampaign.profit || 0) * 0.5)} profit supplémentaire
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (improveCampaign && improveCampaign.name) {
+                actionsHtml += `
+                    <div class="action-item">
+                        <div class="action-title">
+                            📈 "${improveCampaign.name}" - OPTIMISATION
+                        </div>
+                        <div class="action-steps">
+                            ✅ Teste nouvelles créatives
+                        </div>
+                        <div class="action-steps">
+                            ✅ Affine audience (lookalike top performers)
+                        </div>
+                        <div class="action-impact">
