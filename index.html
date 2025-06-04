@@ -44,6 +44,21 @@
             font-size: 0.875rem;
         }
         
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+        
+        .error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
         .summary-card {
             background: linear-gradient(135deg, #059669, #2563eb);
             border-radius: 12px;
@@ -170,6 +185,18 @@
             border-color: #93c5fd;
         }
         
+        .status-warning {
+            color: #92400e;
+            background: #fef3c7;
+            border-color: #fcd34d;
+        }
+        
+        .status-danger {
+            color: #991b1b;
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+        
         .campaign-profit {
             text-align: right;
         }
@@ -261,35 +288,6 @@
             margin-bottom: 2rem;
         }
         
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-        
-        .action-item {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 1rem;
-        }
-        
-        .action-title {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            font-size: 1.125rem;
-        }
-        
-        .action-steps {
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .action-impact {
-            font-size: 0.75rem;
-            opacity: 0.9;
-        }
-        
         .footer {
             text-align: center;
             color: #6b7280;
@@ -334,233 +332,484 @@
             <p class="subtitle">Dernière mise à jour: <span id="lastUpdate"></span></p>
         </div>
 
-        <!-- Summary Section -->
-        <div class="summary-card">
-            <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">💰 RÉSUMÉ EXÉCUTIF (30 secondes)</h2>
-            <div class="summary-grid">
-                <div class="summary-item">
-                    <h3>Tu GAGNES 5,145€ ce mois</h3>
-                    <p>Pour 2,234€ investis en publicité</p>
-                    <p style="font-size: 0.75rem; opacity: 0.75;">ROI global: 230%</p>
-                </div>
-                <div class="summary-item">
-                    <h3>"Lire Coran" = Ta poule aux œufs d'or</h3>
-                    <p>77% de tes profits viennent de cette campagne</p>
-                    <p style="font-size: 0.75rem; opacity: 0.75;">ROAS exceptionnel: 4.2x</p>
-                </div>
-                <div class="summary-item">
-                    <h3>Actions à prendre MAINTENANT</h3>
-                    <p>2 optimisations recommandées</p>
-                    <p style="font-size: 0.75rem; opacity: 0.75;">Impact prévu: +800€ profit</p>
-                </div>
-            </div>
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <h2>🔄 Chargement de tes données Meta en cours...</h2>
+            <p>Connexion à l'API Facebook Marketing...</p>
         </div>
 
-        <!-- KPIs Grid -->
-        <div class="kpi-grid">
-            <div class="kpi-card">
-                <div class="kpi-header">
-                    <div>
-                        <div class="kpi-label">Profit Net Total</div>
-                        <div class="kpi-value" style="color: #059669;">5,145€</div>
-                    </div>
-                    <div class="kpi-icon">💰</div>
-                </div>
-                <div style="font-size: 0.75rem; color: #059669; margin-top: 0.5rem;">+23% vs mois dernier</div>
-            </div>
-            
-            <div class="kpi-card">
-                <div class="kpi-header">
-                    <div>
-                        <div class="kpi-label">ROAS Moyen</div>
-                        <div class="kpi-value" style="color: #2563eb;">3.3x</div>
-                    </div>
-                    <div class="kpi-icon">📈</div>
-                </div>
-                <div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem;">1€ investi = 3.3€ généré</div>
-            </div>
-            
-            <div class="kpi-card">
-                <div class="kpi-header">
-                    <div>
-                        <div class="kpi-label">Conversions</div>
-                        <div class="kpi-value" style="color: #7c3aed;">43</div>
-                    </div>
-                    <div class="kpi-icon">🎯</div>
-                </div>
-                <div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem;">Ventes ce mois</div>
-            </div>
-            
-            <div class="kpi-card">
-                <div class="kpi-header">
-                    <div>
-                        <div class="kpi-label">Budget Utilisé</div>
-                        <div class="kpi-value" style="color: #ea580c;">2,234€</div>
-                    </div>
-                    <div class="kpi-icon">💳</div>
-                </div>
-                <div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem;">Dépenses publicitaires</div>
-            </div>
-            
-            <div class="kpi-card">
-                <div class="kpi-header">
-                    <div>
-                        <div class="kpi-label">Chiffre d'Affaires</div>
-                        <div class="kpi-value" style="color: #4f46e5;">7,379€</div>
-                    </div>
-                    <div class="kpi-icon">💹</div>
-                </div>
-                <div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem;">Revenus générés</div>
-            </div>
+        <!-- Error State -->
+        <div id="errorState" class="error" style="display: none;">
+            <h3>❌ Erreur de connexion</h3>
+            <p id="errorMessage"></p>
         </div>
 
-        <!-- Campaigns Detail -->
-        <div class="campaign-section">
-            <h3 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem;">
-                🚀 Analyse Détaillée - Vue Business Owner
-            </h3>
-            
-            <!-- Campaign 1: Lire Coran -->
-            <div class="campaign-item">
-                <div class="campaign-header">
-                    <div class="campaign-title">
-                        <div class="campaign-name">Lire Coran - BROAD (Fr - Blg)</div>
-                        <div class="status-badge status-excellent">🟢 EXCELLENT</div>
-                    </div>
-                    <div class="campaign-profit">
-                        <div class="profit-value">+3,987€</div>
-                        <div class="profit-label">profit net ce mois</div>
-                    </div>
-                </div>
-
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-label">Budget Investi</div>
-                        <div class="metric-value" style="color: #dc2626;">1,247€</div>
-                        <div class="metric-subtext">178€/jour</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Revenus Générés</div>
-                        <div class="metric-value" style="color: #2563eb;">5,234€</div>
-                        <div class="metric-subtext">748€/jour</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">ROAS</div>
-                        <div class="metric-value" style="color: #7c3aed;">4.2x</div>
-                        <div class="metric-subtext">Retour sur investissement</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Ventes</div>
-                        <div class="metric-value" style="color: #059669;">28</div>
-                        <div class="metric-subtext">4 ventes/jour</div>
-                    </div>
-                </div>
-
-                <div class="explanation-box">
-                    <div class="explanation-title">🧠 Explication Business :</div>
-                    <div class="explanation-text">
-                        Cette campagne génère 4.2€ pour chaque 1€ investi. Avec un budget de 178€/jour, tu gagnes 570€/jour net. C'est une MACHINE À CASH !
-                    </div>
-                </div>
-
-                <div class="recommendation-box">
-                    <div class="recommendation-title">💡 Recommandation IA :</div>
-                    <div class="recommendation-text">
-                        🚀 EXCELLENT! Augmente le budget de +50% (624€ supplémentaires)
-                    </div>
+        <!-- Dashboard Content -->
+        <div id="dashboardContent" style="display: none;">
+            <!-- Summary Section -->
+            <div class="summary-card">
+                <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">💰 RÉSUMÉ EXÉCUTIF (30 secondes)</h2>
+                <div class="summary-grid" id="summaryGrid">
+                    <!-- Will be populated by JavaScript -->
                 </div>
             </div>
 
-            <!-- Campaign 2: Ebook 85% -->
-            <div class="campaign-item">
-                <div class="campaign-header">
-                    <div class="campaign-title">
-                        <div class="campaign-name">Ebook 85% - Broad (FR - BLG)</div>
-                        <div class="status-badge status-good">🔵 BON</div>
-                    </div>
-                    <div class="campaign-profit">
-                        <div class="profit-value">+1,158€</div>
-                        <div class="profit-label">profit net ce mois</div>
-                    </div>
-                </div>
+            <!-- KPIs Grid -->
+            <div class="kpi-grid" id="kpiGrid">
+                <!-- Will be populated by JavaScript -->
+            </div>
 
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-label">Budget Investi</div>
-                        <div class="metric-value" style="color: #dc2626;">987€</div>
-                        <div class="metric-subtext">141€/jour</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Revenus Générés</div>
-                        <div class="metric-value" style="color: #2563eb;">2,145€</div>
-                        <div class="metric-subtext">306€/jour</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">ROAS</div>
-                        <div class="metric-value" style="color: #7c3aed;">2.17x</div>
-                        <div class="metric-subtext">Retour sur investissement</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Ventes</div>
-                        <div class="metric-value" style="color: #059669;">15</div>
-                        <div class="metric-subtext">2 ventes/jour</div>
-                    </div>
-                </div>
-
-                <div class="explanation-box">
-                    <div class="explanation-title">🧠 Explication Business :</div>
-                    <div class="explanation-text">
-                        Rentable avec 54% de marge. Budget actuel 141€/jour génère 165€/jour de profit. Potentiel d'amélioration !
-                    </div>
-                </div>
-
-                <div class="recommendation-box">
-                    <div class="recommendation-title">💡 Recommandation IA :</div>
-                    <div class="recommendation-text">
-                        📈 BON RÉSULTAT. Teste de nouvelles audiences ou créatives pour optimiser
-                    </div>
+            <!-- Campaigns Detail -->
+            <div class="campaign-section">
+                <h3 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem;">
+                    🚀 Analyse Détaillée - Vue Business Owner
+                </h3>
+                <div id="campaignsContainer">
+                    <!-- Will be populated by JavaScript -->
                 </div>
             </div>
-        </div>
 
-        <!-- Action Items -->
-        <div class="actions-section">
-            <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">
-                ⚡ ACTIONS PRIORITAIRES (Next 24-48h)
-            </h3>
-            <div class="actions-grid">
-                <div class="action-item">
-                    <div class="action-title">🚀 "Lire Coran" - SCALE IMMÉDIAT</div>
-                    <div class="action-steps">✅ Augmente budget de 50% (1247€ → 1870€)</div>
-                    <div class="action-steps">✅ Duplique sur autres audiences similaires</div>
-                    <div class="action-impact">Impact prévu: +600€ profit supplémentaire</div>
-                </div>
-                <div class="action-item">
-                    <div class="action-title">📈 "Ebook 85%" - OPTIMISATION</div>
-                    <div class="action-steps">✅ Teste nouvelles créatives</div>
-                    <div class="action-steps">✅ Affine audience (lookalike acheteurs Coran)</div>
-                    <div class="action-impact">Impact prévu: +200€ profit supplémentaire</div>
+            <!-- Actions Section -->
+            <div class="actions-section">
+                <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">
+                    ⚡ ACTIONS PRIORITAIRES (Next 24-48h)
+                </h3>
+                <div id="actionsContainer">
+                    <!-- Will be populated by JavaScript -->
                 </div>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p>🔄 Dashboard mis à jour automatiquement via Cloudflare Workers</p>
+            <p>🔄 Dashboard mis à jour automatiquement depuis Meta API</p>
             <p>📊 Données unifiées Meta Pixel + Conversions API - Attribution parfaite</p>
-            <p class="highlight">🚀 Version SaaS - Prêt pour commercialisation !</p>
+            <p class="highlight">🚀 Version SaaS - Temps réel connecté !</p>
         </div>
     </div>
 
     <script>
-        // Update timestamp
-        document.getElementById('lastUpdate').textContent = new Date().toLocaleString('fr-FR');
-        
-        // Add interactivity
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Arabacademie Dashboard loaded successfully!');
+        // Configuration API Meta
+        const API_CONFIG = {
+            accessToken: 'YOUR_TOKEN_HERE',  // ⚠️ REMPLACE PAR TON TOKEN
+            adAccountId: '521225926263753',  // ✅ Ton Ad Account ID
+            baseUrl: 'https://graph.facebook.com/v18.0'
+        };
+
+        // Variables globales pour les données
+        let globalMetrics = {
+            totalSpend: 0,
+            totalRevenue: 0,
+            roas: 0,
+            conversions: 0,
+            profit: 0
+        };
+
+        let campaignsData = [];
+
+        // Fonction pour formater les nombres
+        function formatNumber(num) {
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'k';
+            }
+            return Math.round(num);
+        }
+
+        function formatEuros(num) {
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 0
+            }).format(num);
+        }
+
+        // Fonction pour déterminer le statut d'une campagne
+        function getCampaignStatus(roas) {
+            if (roas >= 4.0) return { status: 'excellent', label: '🟢 EXCELLENT' };
+            if (roas >= 2.5) return { status: 'good', label: '🔵 BON' };
+            if (roas >= 1.5) return { status: 'warning', label: '🟡 ATTENTION' };
+            return { status: 'danger', label: '🔴 PROBLÈME' };
+        }
+
+        // Fonction pour générer des recommandations
+        function getRecommendation(campaign) {
+            const roas = parseFloat(campaign.roas) || 0;
+            const spend = parseFloat(campaign.spend) || 0;
             
-            // Animation on load
+            if (roas >= 4.0) {
+                return `🚀 EXCELLENT! Augmente le budget de +50% (${formatEuros(spend * 0.5)} supplémentaires)`;
+            } else if (roas >= 2.5) {
+                return `📈 BON RÉSULTAT. Teste de nouvelles audiences ou créatives pour optimiser`;
+            } else if (roas >= 1.5) {
+                return `⚠️ ATTENTION. Optimise la campagne ou réduis le budget de -30%`;
+            } else {
+                return `🛑 PAUSE recommandée. ROAS trop faible, revois ta stratégie`;
+            }
+        }
+
+        // Fonction pour expliquer la performance business
+        function getBusinessExplanation(campaign) {
+            const roas = parseFloat(campaign.roas) || 0;
+            const spend = parseFloat(campaign.spend) || 0;
+            const profit = parseFloat(campaign.profit) || 0;
+            const dailyBudget = Math.round(spend / 30); // Approximation mensuelle
+            const dailyProfit = Math.round(profit / 30);
+            
+            if (roas >= 4.0) {
+                return `💡 Analyse: Cette campagne génère ${roas.toFixed(1)}€ pour chaque 1€ investi. Avec un budget de ${formatEuros(dailyBudget)}/jour, tu gagnes ${formatEuros(dailyProfit)}/jour net. C'est une MACHINE À CASH !`;
+            } else if (roas >= 2.5) {
+                return `💡 Analyse: Rentable avec bonne marge. Budget actuel ${formatEuros(dailyBudget)}/jour génère ${formatEuros(dailyProfit)}/jour de profit. Potentiel d'amélioration !`;
+            } else {
+                return `💡 Analyse: Marge faible. Cette campagne génère peu de profit par rapport aux investissements. Temps d'optimiser !`;
+            }
+        }
+
+        // Fonction pour récupérer les données des campagnes
+        async function fetchCampaignsData() {
+            try {
+                const url = `${API_CONFIG.baseUrl}/act_${API_CONFIG.adAccountId}/campaigns?fields=name,status,spend,impressions,clicks,ctr,cpm,cpp,reach,frequency&access_token=${API_CONFIG.accessToken}`;
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Erreur API: ${response.status} - ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                return data.data || [];
+            } catch (error) {
+                console.error('Erreur lors de la récupération des campagnes:', error);
+                throw error;
+            }
+        }
+
+        // Fonction pour récupérer les insights (métriques de performance)
+        async function fetchCampaignInsights(campaignId) {
+            try {
+                const url = `${API_CONFIG.baseUrl}/${campaignId}/insights?fields=spend,impressions,clicks,actions,action_values,ctr,cpm,cpp&access_token=${API_CONFIG.accessToken}`;
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Erreur insights: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data.data && data.data.length > 0 ? data.data[0] : null;
+            } catch (error) {
+                console.error(`Erreur insights pour campagne ${campaignId}:`, error);
+                return null;
+            }
+        }
+
+        // Fonction pour calculer les métriques dérivées
+        function calculateMetrics(campaigns) {
+            let totalSpend = 0;
+            let totalConversions = 0;
+            let totalRevenue = 0;
+
+            campaigns.forEach(campaign => {
+                const spend = parseFloat(campaign.spend) || 0;
+                const conversions = parseInt(campaign.conversions) || 0;
+                
+                // Estimation du revenu basée sur tes produits
+                // Formation Coran: ~187€ par conversion
+                // Ebook: ~143€ par conversion
+                let avgOrderValue = 165; // Moyenne pondérée
+                if (campaign.name.toLowerCase().includes('coran')) {
+                    avgOrderValue = 187;
+                } else if (campaign.name.toLowerCase().includes('ebook')) {
+                    avgOrderValue = 143;
+                }
+                
+                const revenue = conversions * avgOrderValue;
+                const profit = revenue - spend;
+                const roas = spend > 0 ? revenue / spend : 0;
+
+                // Mise à jour des données de campagne
+                campaign.revenue = revenue;
+                campaign.profit = profit;
+                campaign.roas = roas;
+                campaign.avgOrderValue = avgOrderValue;
+
+                // Accumulation des totaux
+                totalSpend += spend;
+                totalConversions += conversions;
+                totalRevenue += revenue;
+            });
+
+            const totalProfit = totalRevenue - totalSpend;
+            const globalRoas = totalSpend > 0 ? totalRevenue / totalSpend : 0;
+
+            return {
+                totalSpend,
+                totalRevenue,
+                totalConversions,
+                profit: totalProfit,
+                roas: globalRoas
+            };
+        }
+
+        // Fonction pour traiter les données de campagne
+        function processCampaignData(campaign, insights) {
+            const spend = parseFloat(insights?.spend || 0);
+            const clicks = parseInt(insights?.clicks || 0);
+            const impressions = parseInt(insights?.impressions || 0);
+            
+            // Extraction des conversions depuis les actions
+            let conversions = 0;
+            if (insights?.actions) {
+                const purchaseAction = insights.actions.find(action => 
+                    action.action_type === 'purchase' || 
+                    action.action_type === 'offsite_conversion.fb_pixel_purchase'
+                );
+                conversions = parseInt(purchaseAction?.value || 0);
+            }
+
+            return {
+                id: campaign.id,
+                name: campaign.name,
+                status: campaign.status,
+                spend: spend,
+                conversions: conversions,
+                clicks: clicks,
+                impressions: impressions,
+                ctr: clicks > 0 && impressions > 0 ? (clicks / impressions * 100).toFixed(2) : 0,
+                cpm: impressions > 0 ? (spend / impressions * 1000).toFixed(2) : 0
+            };
+        }
+
+        // Fonction pour charger toutes les données
+        async function loadDashboardData() {
+            try {
+                document.getElementById('loadingState').style.display = 'block';
+                document.getElementById('errorState').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'none';
+
+                // Récupération des campagnes
+                const campaigns = await fetchCampaignsData();
+                console.log('Campagnes récupérées:', campaigns);
+
+                if (campaigns.length === 0) {
+                    throw new Error('Aucune campagne trouvée dans ce compte publicitaire');
+                }
+
+                // Traitement des données pour chaque campagne
+                const processedCampaigns = [];
+                for (const campaign of campaigns) {
+                    if (campaign.status === 'ACTIVE' || campaign.status === 'PAUSED') {
+                        const insights = await fetchCampaignInsights(campaign.id);
+                        const processedCampaign = processCampaignData(campaign, insights);
+                        processedCampaigns.push(processedCampaign);
+                    }
+                }
+
+                campaignsData = processedCampaigns;
+                globalMetrics = calculateMetrics(processedCampaigns);
+
+                // Affichage du dashboard
+                renderDashboard();
+                
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+                document.getElementById('errorMessage').textContent = error.message;
+            }
+        }
+
+        // Fonction pour rendre le dashboard
+        function renderDashboard() {
+            renderSummary();
+            renderKPIs();
+            renderCampaigns();
+            renderActions();
+        }
+
+        // Rendu de la section résumé
+        function renderSummary() {
+            const bestCampaign = campaignsData.reduce((best, campaign) => 
+                campaign.profit > best.profit ? campaign : best, campaignsData[0]);
+            
+            const summaryHtml = `
+                <div class="summary-item">
+                    <h3>Tu GAGNES ${formatEuros(globalMetrics.profit)} ce mois</h3>
+                    <p>Pour ${formatEuros(globalMetrics.totalSpend)} investis en publicité</p>
+                    <p style="font-size: 0.75rem; opacity: 0.75;">ROI global: ${((globalMetrics.profit/globalMetrics.totalSpend)*100).toFixed(0)}%</p>
+                </div>
+                <div class="summary-item">
+                    <h3>"${bestCampaign?.name}" = Ta poule aux œufs d'or</h3>
+                    <p>${((bestCampaign?.profit/globalMetrics.profit)*100).toFixed(0)}% de tes profits viennent de cette campagne</p>
+                    <p style="font-size: 0.75rem; opacity: 0.75;">ROAS: ${bestCampaign?.roas.toFixed(1)}x</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Actions à prendre MAINTENANT</h3>
+                    <p>${campaignsData.filter(c => c.roas >= 4).length} campagnes à scaler</p>
+                    <p style="font-size: 0.75rem; opacity: 0.75;">Impact prévu: +${formatEuros(globalMetrics.profit * 0.15)}</p>
+                </div>
+            `;
+            document.getElementById('summaryGrid').innerHTML = summaryHtml;
+        }
+
+        // Rendu des KPIs
+        function renderKPIs() {
+            const kpis = [
+                { label: 'Profit Net Total', value: formatEuros(globalMetrics.profit), color: '#059669', icon: '💰' },
+                { label: 'ROAS Moyen', value: `${globalMetrics.roas.toFixed(1)}x`, color: '#2563eb', icon: '📈' },
+                { label: 'Conversions', value: globalMetrics.totalConversions, color: '#7c3aed', icon: '🎯' },
+                { label: 'Budget Utilisé', value: formatEuros(globalMetrics.totalSpend), color: '#ea580c', icon: '💳' },
+                { label: 'Chiffre d\'Affaires', value: formatEuros(globalMetrics.totalRevenue), color: '#4f46e5', icon: '💹' }
+            ];
+
+            const kpiHtml = kpis.map(kpi => `
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div>
+                            <div class="kpi-label">${kpi.label}</div>
+                            <div class="kpi-value" style="color: ${kpi.color};">${kpi.value}</div>
+                        </div>
+                        <div class="kpi-icon">${kpi.icon}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('kpiGrid').innerHTML = kpiHtml;
+        }
+
+        // Rendu des campagnes
+        function renderCampaigns() {
+            const campaignsHtml = campaignsData.map(campaign => {
+                const statusInfo = getCampaignStatus(campaign.roas);
+                const dailyBudget = Math.round(campaign.spend / 30);
+                const dailyRevenue = Math.round(campaign.revenue / 30);
+                const dailyConversions = Math.round(campaign.conversions / 30 * 10) / 10;
+
+                return `
+                    <div class="campaign-item">
+                        <div class="campaign-header">
+                            <div class="campaign-title">
+                                <div class="campaign-name">${campaign.name}</div>
+                                <div class="status-badge status-${statusInfo.status}">${statusInfo.label}</div>
+                            </div>
+                            <div class="campaign-profit">
+                                <div class="profit-value">+${formatEuros(campaign.profit)}</div>
+                                <div class="profit-label">profit net période</div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">Budget Investi</div>
+                                <div class="metric-value" style="color: #dc2626;">${formatEuros(campaign.spend)}</div>
+                                <div class="metric-subtext">~${formatEuros(dailyBudget)}/jour</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Revenus Générés</div>
+                                <div class="metric-value" style="color: #2563eb;">${formatEuros(campaign.revenue)}</div>
+                                <div class="metric-subtext">~${formatEuros(dailyRevenue)}/jour</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">ROAS</div>
+                                <div class="metric-value" style="color: #7c3aed;">${campaign.roas.toFixed(1)}x</div>
+                                <div class="metric-subtext">Retour sur investissement</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Conversions</div>
+                                <div class="metric-value" style="color: #059669;">${campaign.conversions}</div>
+                                <div class="metric-subtext">${dailyConversions} /jour</div>
+                            </div>
+                        </div>
+
+                        <div class="explanation-box">
+                            <div class="explanation-title">🧠 Explication Business :</div>
+                            <div class="explanation-text">${getBusinessExplanation(campaign)}</div>
+                        </div>
+
+                        <div class="recommendation-box">
+                            <div class="recommendation-title">💡 Recommandation IA :</div>
+                            <div class="recommendation-text">${getRecommendation(campaign)}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('campaignsContainer').innerHTML = campaignsHtml;
+        }
+
+        // Rendu des actions
+        function renderActions() {
+            const topCampaign = campaignsData.reduce((best, campaign) => 
+                campaign.roas > best.roas ? campaign : best, campaignsData[0]);
+            
+            const improveCampaign = campaignsData.find(campaign => 
+                campaign.roas >= 2 && campaign.roas < 4) || campaignsData[1];
+
+            const actionsHtml = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div style="background: rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 1rem;">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem; font-size: 1.125rem;">
+                            🚀 "${topCampaign?.name}" - SCALE IMMÉDIAT
+                        </div>
+                        <div style="font-size: 0.875rem; margin-bottom: 0.5rem;">
+                            ✅ Duplique sur autres audiences similaires
+                        </div>
+                        <div style="font-size: 0.75rem; opacity: 0.9;">
+                            Impact prévu: +${formatEuros(topCampaign?.profit * 0.5)} profit supplémentaire
+                        </div>
+                    </div>
+                    ${improveCampaign ? `
+                    <div style="background: rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 1rem;">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem; font-size: 1.125rem;">
+                            📈 "${improveCampaign.name}" - OPTIMISATION
+                        </div>
+                        <div style="font-size: 0.875rem; margin-bottom: 0.5rem;">
+                            ✅ Teste nouvelles créatives
+                        </div>
+                        <div style="font-size: 0.875rem; margin-bottom: 0.5rem;">
+                            ✅ Affine audience (lookalike top performers)
+                        </div>
+                        <div style="font-size: 0.75rem; opacity: 0.9;">
+                            Impact prévu: +${formatEuros(improveCampaign.profit * 0.2)} profit supplémentaire
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            document.getElementById('actionsContainer').innerHTML = actionsHtml;
+        }
+
+        // Validation du token
+        function validateToken() {
+            if (API_CONFIG.accessToken === 'YOUR_TOKEN_HERE') {
+                throw new Error('⚠️ Tu dois remplacer YOUR_TOKEN_HERE par ton vrai token Meta API dans le code !');
+            }
+        }
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mise à jour du timestamp
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString('fr-FR');
+            
+            try {
+                validateToken();
+                loadDashboardData();
+            } catch (error) {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+                document.getElementById('errorMessage').textContent = error.message;
+            }
+        });
+
+        // Actualisation automatique toutes les 5 minutes
+        setInterval(() => {
+            console.log('🔄 Actualisation automatique des données...');
+            loadDashboardData();
+        }, 300000); // 5 minutes
+
+        // Animation des cartes au chargement
+        function animateCards() {
             const cards = document.querySelectorAll('.kpi-card, .campaign-item');
             cards.forEach((card, index) => {
                 card.style.opacity = '0';
@@ -571,7 +820,27 @@
                     card.style.transform = 'translateY(0)';
                 }, index * 100);
             });
+        }
+
+        // Gestion des erreurs globales
+        window.addEventListener('error', function(e) {
+            console.error('Erreur JavaScript:', e.error);
         });
+
+        // Fonction utilitaire pour debug
+        function debugInfo() {
+            console.log('🔍 Debug Info:');
+            console.log('Ad Account ID:', API_CONFIG.adAccountId);
+            console.log('Token présent:', API_CONFIG.accessToken !== 'YOUR_TOKEN_HERE');
+            console.log('Campagnes chargées:', campaignsData.length);
+            console.log('Métriques globales:', globalMetrics);
+        }
+
+        // Exposition des fonctions pour debug
+        window.debugInfo = debugInfo;
+        window.reloadData = loadDashboardData;
     </script>
 </body>
-</html>
+</html>✅ Augmente budget de 50% (${formatEuros(topCampaign?.spend * 0.5)} supplémentaires)
+                        </div>
+                        <div style="font-size: 0.875rem; margin-bottom: 0.5rem;">
